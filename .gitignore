@@ -7,6 +7,8 @@
 *.pdb
 *.o
 .vs\
+*.suo
+*.VC.db
 *.so
 *.db
 *.ipch
