@@ -1,8 +1,12 @@
 *.com
 *.class
 *.dll
-*.exe
+*.log
+*.tlog
+*.obj
+*.pdb
 *.o
+.vs/
 *.so
 *.db
 *.ipch
