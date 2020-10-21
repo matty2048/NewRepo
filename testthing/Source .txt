@@ -12,6 +12,13 @@ using namespace std;
 class graph
 {
     
+
+
+
+
+
+
+
     struct node
     {
         node(float in) :contents(in) {};
