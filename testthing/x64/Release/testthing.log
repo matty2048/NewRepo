@@ -4,8 +4,8 @@ C:\Users\matthew\source\repos\NewRepo\testthing\Source.cpp(149,43): warning C426
 C:\Users\matthew\source\repos\NewRepo\testthing\Source.cpp(198,58): warning C4267: 'argument': conversion from 'size_t' to 'int', possible loss of data
 C:\Users\matthew\source\repos\NewRepo\testthing\Source.cpp(253,32): warning C4018: '<': signed/unsigned mismatch
   Generating code
-  255 of 259 functions (98.5%) were compiled, the rest were copied from previous compilation.
+  1 of 259 functions ( 0.4%) were compiled, the rest were copied from previous compilation.
     0 functions were new in current compilation
-    1 functions had inline decision re-evaluated but remain unchanged
+    0 functions had inline decision re-evaluated but remain unchanged
   Finished generating code
   testthing.vcxproj -> C:\Users\matthew\Source\Repos\NewRepo\x64\Release\testthing.exe

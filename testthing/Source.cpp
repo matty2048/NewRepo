@@ -247,7 +247,7 @@ int* merge(T (&a)[as], T (&b)[bs])
 int main()
 {
     
-    int size = 1000000;
+    int size = 4000000;
     
     int* array = new int[size];
     for (unsigned int i = 0; i < size; i++)
