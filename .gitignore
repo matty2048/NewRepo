@@ -4,6 +4,7 @@
 *.exe
 *.o
 *.so
+/v16
 *.db
 *.ipch
 /.vs/testthing/v16/Browse.VC.opendb
