@@ -256,6 +256,7 @@ int main()
         memcpy(&(z), &(array[i]), sizeof(int));
     }
     auto t1 = std::chrono::high_resolution_clock::now();
+
     mergesort(array,size);
     auto t2 = std::chrono::high_resolution_clock::now();
     for (int i = 0; i < sizeof(array) / sizeof(int); i++)
