@@ -6,7 +6,7 @@
 *.obj
 *.pdb
 *.o
-.vs/
+.vs\
 *.so
 *.db
 *.ipch
