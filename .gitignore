@@ -6,11 +6,12 @@
 *.obj
 *.pdb
 *.o
-.vs\
+.vs/
 *.suo
 *.VC.db
 *.so
-/v16
+x64/
+v16/
 *.db
 *.ipch
 /.vs/testthing/v16/Browse.VC.opendb
