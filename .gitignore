@@ -6,11 +6,11 @@
 *.obj
 *.pdb
 *.o
-.vs/
+/.vs/
 *.suo
 *.VC.db
 *.so
-x64/
+/x64/
 v16/
 *.db
 *.ipch
