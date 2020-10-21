@@ -6,3 +6,6 @@
 *.so
 *.db
 *.ipch
+/.vs/testthing/v16/Browse.VC.opendb
+/.vs/testthing/v16/Browse.VC.db-wal
+/.vs/testthing/v16/Browse.VC.db-shm
