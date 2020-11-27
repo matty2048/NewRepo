@@ -1,11 +1,10 @@
-﻿  Using triplet "x64-windows" from "C:\src\vcpkg-master\installed\x64-windows\"
-  Source.cpp
-C:\Users\matthew\source\repos\NewRepo\testthing\Source.cpp(149,43): warning C4267: 'argument': conversion from 'size_t' to 'int', possible loss of data
-C:\Users\matthew\source\repos\NewRepo\testthing\Source.cpp(198,58): warning C4267: 'argument': conversion from 'size_t' to 'int', possible loss of data
-C:\Users\matthew\source\repos\NewRepo\testthing\Source.cpp(253,32): warning C4018: '<': signed/unsigned mismatch
+﻿  Source.cpp
+C:\Users\DTE user\source\repos\matty2048\NewRepo\testthing\Source.cpp(214,55): warning C4267: 'argument': conversion from 'size_t' to 'int', possible loss of data
+C:\Users\DTE user\source\repos\matty2048\NewRepo\testthing\Source.cpp(263,62): warning C4267: 'argument': conversion from 'size_t' to 'int', possible loss of data
+C:\Users\DTE user\source\repos\matty2048\NewRepo\testthing\Source.cpp(318,36): warning C4018: '<': signed/unsigned mismatch
   Generating code
-  1 of 259 functions ( 0.4%) were compiled, the rest were copied from previous compilation.
+  3 of 260 functions ( 1.2%) were compiled, the rest were copied from previous compilation.
     0 functions were new in current compilation
     0 functions had inline decision re-evaluated but remain unchanged
   Finished generating code
-  testthing.vcxproj -> C:\Users\matthew\Source\Repos\NewRepo\x64\Release\testthing.exe
+  testthing.vcxproj -> C:\Users\DTE user\Source\Repos\matty2048\NewRepo\x64\Release\testthing.exe
