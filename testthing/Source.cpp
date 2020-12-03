@@ -225,18 +225,18 @@ void multimergesort(  int* a, size_t sa, std::promise<  int*> && ret)
         std::thread l(&multimergesort,left, (sa + 1) / 2,std::move(leftp));
         std::thread r(&multimergesort, right, (sa ) / 2, std::move(rightp));
 
-        l.join();
-     
-        r.join();
-     
-       
-        left = f_left.get();
-        right = f_right.get();
-        
-        
-    }
-    else
-    {
+            l.join();
+
+            r.join();
+
+
+            left = f_left.get();
+            right = f_right.get();
+
+
+        }
+        else
+        {
 
         left = mergesort(left, (sa + 1) / 2);
         right = mergesort(right, sa / 2);
