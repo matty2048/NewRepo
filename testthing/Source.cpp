@@ -6,7 +6,6 @@
 #include <chrono>
 #include <thread>
 #include <future>
-#include <queue>
 using namespace std;
 using namespace chrono_literals;
 
@@ -22,9 +21,6 @@ struct node
 
 class graph
 {
-    
-    
-
 public:
     std::vector<node> nodes;
     template<typename ... t2>
@@ -53,38 +49,28 @@ public:
         nodes[first].conections.push_back(second);
         nodes[second].conections.push_back(first);
     }*/
-    struct compare
+
+    std::vector<node>* FindRoute(int start, int end)
     {
-        bool operator()(node lhs, node rhs)
-        {
-            if (lhs.dist > rhs.dist) return true;
-            else return false;
-        }
-    };
-    std::vector<node> FindRoute(int start, int end)
-    {
-        std::vector<node> UnvisitedNodes = nodes;
-        UnvisitedNodes[start].dist = 0;
-       
+        std::vector<node>* UnvisitedNodes = &nodes;
+        UnvisitedNodes->at(start).dist = 0;
         
-        while (std::find_if(UnvisitedNodes.begin(), UnvisitedNodes.end(), [](node n) {return !n.visited; }) != UnvisitedNodes.end())
+        
+        while (std::find_if(UnvisitedNodes->begin(), UnvisitedNodes->end(), [](node n) {return !n.visited; }) != UnvisitedNodes->end())
         {
-            //node* u = std::min_element(UnvisitedNodes.begin(), UnvisitedNodes.end(), [](node l, node r) {
-            //    if (l.dist < r.dist) return true;
-            //    else return false;
-            //    })._Ptr;
             node* temp = new node(100);
             node* u = temp;
-            for (unsigned int i=0;i<UnvisitedNodes.size();i++)
+            for (unsigned int i=0;i<UnvisitedNodes->size();i++)
             {
-                if (UnvisitedNodes[i].dist < u->dist && !UnvisitedNodes[i].visited) u = &UnvisitedNodes[i];
+                if (UnvisitedNodes->at(i).dist <= u->dist && !UnvisitedNodes->at(i).visited) u = &UnvisitedNodes->at(i);
+               
             }
             delete temp;
             u->visited = true;
             //std::cout << "a";
             for (unsigned int n = 0; n < u->conections.size(); n++)
             {
-                node* v = &UnvisitedNodes[u->conections[n].first];
+                node* v = &UnvisitedNodes->at(u->conections[n].first);
                 if (!v->visited) //if the Node hasnt been visted already
                 {
                     float alt = u->dist + u->conections[n].second;
@@ -129,7 +115,7 @@ void insertsort(int* array,size_t N)
         }
     }
 }
-  int* merge(  int* a,   int* b,   int as,   int bs)
+int* merge(  int* a,   int* b,   int as,   int bs)
 {
     //also bad cos result never freed :c
       int ia = 0;
@@ -167,7 +153,7 @@ void insertsort(int* array,size_t N)
 
     return result;
 }
-  int* mergesort(  int* a, size_t sa)
+int* mergesort(  int* a, size_t sa)
 {
     //this is horrible garbage no good very bad cos left + right never freed :c
     if (sa <= 1) return &a[0];
@@ -194,7 +180,7 @@ void insertsort(int* array,size_t N)
     right = mergesort(right, sa / 2);
     return merge(left, right,(sa+1)/2,sa/2);
 }
-void multimergesort(  int* a, size_t sa, std::promise<  int*> && ret)
+void multimergesort(  int* a, size_t sa, std::promise<int*> && ret)
 {
     //this is horrible garbage no good very bad cos left + right never freed :c
     if (sa <= 1) { ret.set_value(a); return; };
@@ -294,16 +280,25 @@ typedef std::pair<int, int> p; //first is node connection second is weight
 int main()
 {
     graph g;
-    g.addnode(1, p(1,2));
+    g.addnode(1, p(1,2),p(3,5),p(4,0));
     g.addnode(11, p(0, 2), p(2,2));
     g.addnode(3, p(1, 1));
-
-    std::vector<node> ns = g.FindRoute(0, 2);
-    for (auto n : ns)
+    g.addnode(30, p(0, 5));
+    g.addnode(20, p(2, 0));
+    std::vector<node>* ns = g.FindRoute(0, 2);
+    for (unsigned int i=0; i<ns->size();i++)
     {
-        std::cout << n.dist << std::endl;
+        std::cout << ns->at(i).dist << std::endl;
 
     }
+    std::cout << std::endl;
+    node* prev = &ns->at(2);
+    while (prev != nullptr)
+    {
+        std::cout << prev->contents <<std::endl;
+        prev = prev->prev;
+    }
+
     return 0;
     /*{
         int size = 30000;
