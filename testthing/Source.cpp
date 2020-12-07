@@ -61,30 +61,24 @@ public:
             else return false;
         }
     };
-    std::vector<node> FindRoute(int start, int end)
+    std::vector<node>* FindRoute(int start, int end)
     {
-        std::vector<node> UnvisitedNodes = nodes;
-        UnvisitedNodes[start].dist = 0;
-       
-        
-        while (std::find_if(UnvisitedNodes.begin(), UnvisitedNodes.end(), [](node n) {return !n.visited; }) != UnvisitedNodes.end())
+        std::vector<node>* UnvisitedNodes = new std::vector<node>(nodes);
+        UnvisitedNodes->at(start).dist = 0;
+        while (std::find_if(UnvisitedNodes->begin(), UnvisitedNodes->end(), [](node n) {return !n.visited; }) != UnvisitedNodes->end())
         {
-            //node* u = std::min_element(UnvisitedNodes.begin(), UnvisitedNodes.end(), [](node l, node r) {
-            //    if (l.dist < r.dist) return true;
-            //    else return false;
-            //    })._Ptr;
+            
             node* temp = new node(100);
             node* u = temp;
-            for (unsigned int i=0;i<UnvisitedNodes.size();i++)
+            for (unsigned int i=0;i<UnvisitedNodes->size();i++)
             {
-                if (UnvisitedNodes[i].dist < u->dist && !UnvisitedNodes[i].visited) u = &UnvisitedNodes[i];
+                if (UnvisitedNodes->at(i).dist < u->dist && !UnvisitedNodes->at(i).visited) u = &UnvisitedNodes->at(i);
             }
             delete temp;
             u->visited = true;
-            //std::cout << "a";
             for (unsigned int n = 0; n < u->conections.size(); n++)
             {
-                node* v = &UnvisitedNodes[u->conections[n].first];
+                node* v = &UnvisitedNodes->at(u->conections[n].first);
                 if (!v->visited) //if the Node hasnt been visted already
                 {
                     float alt = u->dist + u->conections[n].second;
@@ -129,7 +123,7 @@ void insertsort(int* array,size_t N)
         }
     }
 }
-  int* merge(  int* a,   int* b,   int as,   int bs)
+int* merge(  int* a,   int* b,   int as,   int bs)
 {
     //also bad cos result never freed :c
       int ia = 0;
@@ -167,7 +161,7 @@ void insertsort(int* array,size_t N)
 
     return result;
 }
-  int* mergesort(  int* a, size_t sa)
+int* mergesort(  int* a, size_t sa)
 {
     //this is horrible garbage no good very bad cos left + right never freed :c
     if (sa <= 1) return &a[0];
@@ -297,13 +291,20 @@ int main()
     g.addnode(1, p(1,2));
     g.addnode(11, p(0, 2), p(2,2));
     g.addnode(3, p(1, 1));
+    g.addnode(12, p(2, 3));
 
-    std::vector<node> ns = g.FindRoute(0, 2);
-    for (auto n : ns)
+
+
+    std::vector<node>* ns = g.FindRoute(0, 2);
+    int n = 2;
+    node* target = &ns->at(2);
+    while (target != nullptr)
     {
-        std::cout << n.dist << std::endl;
-
+        
+        std::cout << target->contents << std::endl;
+        target = target->prev;
     }
+
     return 0;
     /*{
         int size = 30000;
