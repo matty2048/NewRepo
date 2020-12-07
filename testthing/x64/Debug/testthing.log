@@ -1,5 +1,4 @@
-﻿  Using triplet "x64-windows" from "C:\src\vcpkg-master\installed\x64-windows\"
-  Source.cpp
-C:\Users\matthew\source\repos\NewRepo\testthing\Source.cpp(181,43): warning C4267: 'argument': conversion from 'size_t' to 'int', possible loss of data
-C:\Users\matthew\source\repos\NewRepo\testthing\Source.cpp(230,60): warning C4267: 'argument': conversion from 'size_t' to 'int', possible loss of data
-  testthing.vcxproj -> C:\Users\matthew\Source\Repos\NewRepo\x64\Debug\testthing.exe
+﻿  Source.cpp
+C:\Users\DTE user\source\repos\matty2048\NewRepo\testthing\Source.cpp(189,43): warning C4267: 'argument': conversion from 'size_t' to 'int', possible loss of data
+C:\Users\DTE user\source\repos\matty2048\NewRepo\testthing\Source.cpp(238,60): warning C4267: 'argument': conversion from 'size_t' to 'int', possible loss of data
+  testthing.vcxproj -> C:\Users\DTE user\source\repos\matty2048\NewRepo\x64\Debug\testthing.exe
