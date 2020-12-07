@@ -39,17 +39,6 @@ public:
         addneighbour(n, t2...);
     }
 
-   /* void addlink(int first,int second)
-    {
-        nodes[first].conections.push_back(second);
-    }
-   
-    void addlink2(int first, int second)
-    {
-        nodes[first].conections.push_back(second);
-        nodes[second].conections.push_back(first);
-    }*/
-
     std::vector<node>* FindRoute(int start, int end)
     {
         std::vector<node>* UnvisitedNodes = &nodes;
@@ -268,18 +257,13 @@ int* merge(T (&a)[as], T (&b)[bs])
     }
     return result;
 }
-bool VerifySort(int* arr, size_t N)
-{
-    if (N == 1 || N == 0) return 1;
-    if (arr[N-1] > arr[N - 2]) return 0;
-
-    return VerifySort(arr, N - 1);
-}
 typedef std::pair<int, int> p; //first is node connection second is weight
 
 int main()
 {
     graph g;
+
+
     g.addnode(1, p(1,2),p(3,5),p(4,0));
     g.addnode(11, p(0, 2), p(2,2));
     g.addnode(3, p(1, 1));
