@@ -6,243 +6,224 @@
 #include <chrono>
 #include <thread>
 #include <future>
+#include <queue>
 using namespace std;
 using namespace chrono_literals;
 
+struct node
+    {
+        node(float in) :contents(in) { dist = INFINITY; visited = false; };
+        float contents;
+        vector<std::pair<int,int>> conections;
+        float dist = INFINITY;
+        bool visited = false;
+        node* prev = nullptr;
+    };
 
-    
-
-struct tnode
+class graph
 {
-    tnode(int in) :contents(in) {};
-    int contents;
-    tnode* L;
-    tnode* R;
-};
-    class tree
-    {
-    public:
-        void AddNode(tnode* n) {
-
-            if (!root) {
-                root = n;
-                return;
-            }
-            rAddNode(n, root);
-            return;
-        };
-        void LeftRotate(tnode* root, tnode* pivot)
-        {
-
-
-        }
-
-    private:
-        tnode* root;
-        void rAddNode(tnode* n, tnode* h)
-        {
-            if (n->contents < h->contents)
-            {
-                if (!h->L) h->L = n;
-                else rAddNode(n, h->L);
-                return;
-            }
-            else
-            {
-                if (!h->R) h->R = n;
-                else rAddNode(n, h->R);
-                return;
-            }
-        }
-
-
-    };
-    class graph
-    {
-
-    public:
-        struct node
-        {
-            node(float in) :contents(in) {};
-            float contents;
-            vector<int> conections;
-        };
-        std::vector<node> nodes;
-        template<typename ... t2>
-        void addnode(float contents, t2...conections)
-        {
-            nodes.push_back(contents);
-            size_t s = sizeof...(t2);
-            if (s != 0) addneighbour(&(*(nodes.end() - 1)), &conections...);
-        };
-
-        void addneighbour(node* n) { return; };
-        template<typename T = int, typename ... T2>
-        void addneighbour(node* n, T t1, T2 ... t2)
-        {
-            n->conections.emplace_back(*t1);
-            addneighbour(n, t2...);
-        }
-
-        void addlink(int first, int second)
-        {
-            nodes[first].conections.push_back(second);
-        }
-
-        void addlink2(int first, int second)
-        {
-            nodes[first].conections.push_back(second);
-            nodes[second].conections.push_back(first);
-        }
-    };
-
-    template<typename T = int, size_t N>
-    void insertsort(T(&array)[N])
-    {
-        for (unsigned int i = 1; i < N; i++)
-        {
-            int j = i;
-            int target = array[i];
-            while (j >= 0 && array[j - 1] > array[j])
-            {
-                array[j] = array[j - 1];
-                array[j - 1] = target;
-                j -= 1;
-            }
-        }
-    }
     
-    void bubblesort(int* array,unsigned int N)
+    
+
+public:
+    std::vector<node> nodes;
+    template<typename ... t2>
+    void addnode(float contents, t2...conections)
     {
-        bool sorted = false;
-        while (!sorted)
+        nodes.emplace_back(contents);
+        size_t s = sizeof...(t2);
+        if (s != 0) addneighbour(&(*(nodes.end() - 1)), &conections...);
+    };
+    
+    void addneighbour(node* n) { return; };
+    template<typename T = int, typename ... T2>
+    void addneighbour(node* n, T t1, T2 ... t2)
+    {
+        n->conections.emplace_back(*t1);
+        addneighbour(n, t2...);
+    }
+
+   /* void addlink(int first,int second)
+    {
+        nodes[first].conections.push_back(second);
+    }
+   
+    void addlink2(int first, int second)
+    {
+        nodes[first].conections.push_back(second);
+        nodes[second].conections.push_back(first);
+    }*/
+    struct compare
+    {
+        bool operator()(node lhs, node rhs)
         {
-            sorted = true;
-            for (unsigned int i = 0; i < N; i++)
+            if (lhs.dist > rhs.dist) return true;
+            else return false;
+        }
+    };
+    std::vector<node> FindRoute(int start, int end)
+    {
+        std::vector<node> UnvisitedNodes = nodes;
+        UnvisitedNodes[start].dist = 0;
+       
+        
+        while (std::find_if(UnvisitedNodes.begin(), UnvisitedNodes.end(), [](node n) {return !n.visited; }) != UnvisitedNodes.end())
+        {
+            //node* u = std::min_element(UnvisitedNodes.begin(), UnvisitedNodes.end(), [](node l, node r) {
+            //    if (l.dist < r.dist) return true;
+            //    else return false;
+            //    })._Ptr;
+            node* temp = new node(100);
+            node* u = temp;
+            for (unsigned int i=0;i<UnvisitedNodes.size();i++)
             {
-                
-                if (array[i] > array[i+1])
+                if (UnvisitedNodes[i].dist < u->dist && !UnvisitedNodes[i].visited) u = &UnvisitedNodes[i];
+            }
+            delete temp;
+            u->visited = true;
+            //std::cout << "a";
+            for (unsigned int n = 0; n < u->conections.size(); n++)
+            {
+                node* v = &UnvisitedNodes[u->conections[n].first];
+                if (!v->visited) //if the Node hasnt been visted already
                 {
-                    int temp = array[i];
-                    array[i] = array[i + 1];
-                    array[i + 1] = temp;
-                    sorted = false;
+                    float alt = u->dist + u->conections[n].second;
+                    if (alt < v->dist)
+                    {
+                        v->dist = alt;
+                        v->prev = u;
+                    }
                 }
             }
         }
+        return UnvisitedNodes;
     }
 
-    void insertsort(int* array, size_t N)
+};
+
+
+
+
+template<typename T = int, size_t N>
+void insertsort(T (&array)[N])
+{
+    for (unsigned int i = 1; i < N; i++)
     {
-        for (unsigned int i = 1; i < N; i++)
+        int j = i;
+        while (j >= 0 && array[j - 1] > array[j])
         {
-            int j = i;
-            int target = array[i];
-            while (j >= 0 && array[j - 1] > array[j])
-            {
-                array[j] = array[j - 1];
-                array[j - 1] = target;
-                j -= 1;
-            }
+            std::swap(array[j], array[j - 1]);
+            j -= 1;
         }
     }
-
-
-    int* merge(int* a, int* b, int as, int bs)
+}
+void insertsort(int* array,size_t N)
+{
+    for (unsigned int i = 1; i < N; i++)
     {
-        //also bad cos result never freed :c
-        int ia = 0;
-        int ib = 0;
-        int s = as + bs;
-        int* result = new int[s];
-        int ir = 0;
-        while (ir <= as + bs)
+        int j = i;
+        while (j >= 0 && array[j - 1] > array[j])
         {
-            if (a[ia] <= b[ib] && (ia <= as - 1))
-            {
-                result[ir] = a[ia];
-                ia++;
-                ir++;
-            }
-            else if (ib <= bs - 1)
-            {
-                result[ir] = b[ib];
-                ib++;
-                ir++;
-            }
-            else break;
+            std::swap(array[j], array[j - 1]);
+            j -= 1;
         }
-        while (ia < as) {
+    }
+}
+  int* merge(  int* a,   int* b,   int as,   int bs)
+{
+    //also bad cos result never freed :c
+      int ia = 0;
+      int ib = 0;
+      int s = as + bs;
+      int* result = new   int[s];
+      int ir = 0;
+    while(ir <= as+bs)
+    {
+        if (a[ia] <= b[ib] && (ia <= as-1))
+        {
             result[ir] = a[ia];
             ia++;
             ir++;
         }
-        while (ib < bs)
+        else if(ib <= bs - 1)
         {
             result[ir] = b[ib];
             ib++;
             ir++;
         }
-
-        return result;
+        else break;
     }
-    int* mergesort(int* a, size_t sa)
-    {
-        //this is horrible garbage no good very bad cos left + right never freed :c
-        if (sa <= 1) return &a[0];
-        int il = 0;
-        int ir = 0;
-        int* left = new int[(sa + 1) / 2];
-        int* right = new int[sa / 2];
-
-        for (unsigned int i = 0; i < sa; i++)
-        {
-            if (i < (sa + 1) / 2)
-            {
-                left[il] = a[i];
-                il++;
-            }
-            else
-            {
-                right[ir] = a[i];
-                ir++;
-            }
-        }
-
-        left = mergesort(left, (sa + 1) / 2);
-        right = mergesort(right, sa / 2);
-        return merge(left, right, (sa + 1) / 2, sa / 2);
+    while (ia < as) {
+        result[ir] = a[ia];
+        ia++;
+        ir++;
     }
-    void multimergesort(int* a, size_t sa, std::promise<int*>&& ret)
+    while (ib < bs)
     {
-        //this is horrible garbage no good very bad cos left + right never freed :c
-        if (sa <= 1) { ret.set_value(a); return; };
-        int il = 0;
-        int ir = 0;
-        int* left = new int[(sa + 1) / 2];
-        int* right = new int[sa / 2];
+        result[ir] = b[ib];
+        ib++;
+        ir++;
+    }
 
-        for (unsigned int i = 0; i < sa; i++)
+    return result;
+}
+  int* mergesort(  int* a, size_t sa)
+{
+    //this is horrible garbage no good very bad cos left + right never freed :c
+    if (sa <= 1) return &a[0];
+      int il = 0;
+      int ir = 0;
+      int* left = new   int[(sa + 1)/2];
+      int* right = new   int[sa / 2];
+   
+    for (unsigned int i = 0; i < sa; i++)
+    {
+        if (i < (sa+1) / 2)
         {
-            if (i < (sa + 1) / 2)
-            {
-                left[il] = a[i];
-                il++;
-            }
-            else
-            {
-                right[ir] = a[i];
-                ir++;
-            }
+            left[il] = a[i];
+            il++;
         }
-        if (sa > 800000 / 4)
+        else
         {
-            std::promise<int*> leftp;
-            std::promise<int*> rightp;
-            auto f_left = leftp.get_future();
-            auto f_right = rightp.get_future();
-            std::thread l(&multimergesort, left, (sa + 1) / 2, std::move(leftp));
-            std::thread r(&multimergesort, right, (sa) / 2, std::move(rightp));
+            right[ir] = a[i];
+            ir++;
+        }
+    }
+
+    left = mergesort(left, (sa + 1) / 2);
+    right = mergesort(right, sa / 2);
+    return merge(left, right,(sa+1)/2,sa/2);
+}
+void multimergesort(  int* a, size_t sa, std::promise<  int*> && ret)
+{
+    //this is horrible garbage no good very bad cos left + right never freed :c
+    if (sa <= 1) { ret.set_value(a); return; };
+    int il = 0;
+    int ir = 0;
+    int* left = new   int[(sa + 1) / 2];
+    int* right = new   int[sa / 2];
+
+    for (unsigned int i = 0; i < sa; i++)
+    {
+        if (i < (sa + 1) / 2)
+        {
+            left[il] = a[i];
+            il++;
+        }
+        else
+        {
+            right[ir] = a[i];
+            ir++;
+        }
+    }
+    if (sa > 800000/4)
+    {
+        std::promise<  int*> leftp;
+        std::promise<  int*> rightp;
+        auto f_left = leftp.get_future();
+        auto f_right = rightp.get_future();
+        std::thread l(&multimergesort,left, (sa + 1) / 2,std::move(leftp));
+        std::thread r(&multimergesort, right, (sa ) / 2, std::move(rightp));
 
             l.join();
 
@@ -257,104 +238,109 @@ struct tnode
         else
         {
 
-            left = mergesort(left, (sa + 1) / 2);
-            right = mergesort(right, sa / 2);
-        }
-        int* result = merge(left, right, (sa + 1) / 2, sa / 2);
-        ret.set_value(result);
-        return;
+        left = mergesort(left, (sa + 1) / 2);
+        right = mergesort(right, sa / 2);
     }
-
-
-
-
-    template<typename T, size_t as, size_t bs>
-    int* merge(T(&a)[as], T(&b)[bs])
+      int* result = merge(left, right, (sa + 1) / 2, sa / 2);
+    ret.set_value(result);
+    return;
+}
+template<typename T, size_t as, size_t bs>
+int* merge(T (&a)[as], T (&b)[bs])
+{
+    int ia = 0;
+    int ib = 0;
+    int ir = 0;
+    int s = as + bs;
+    int* result = new int[s];
+    while (ir <= as + bs)
     {
-        int ia = 0;
-        int ib = 0;
-        int ir = 0;
-        int s = as + bs;
-        int* result = new int[s];
-        while (ir <= as + bs)
+        if (a[ia] <= b[ib] && (ia <= as - 1))
         {
-            if (a[ia] <= b[ib] && (ia <= as - 1))
-            {
-                result[ir] = a[ia];
-                ia++;
-                ir++;
-            }
-            else if (ib <= bs - 1)
-            {
-                result[ir] = b[ib];
-                ib++;
-                ir++;
-            }
-            else break;
-        }
-        while (ia < as) {
             result[ir] = a[ia];
             ia++;
             ir++;
         }
-        while (ib < bs)
+        else if (ib <= bs - 1)
         {
             result[ir] = b[ib];
             ib++;
             ir++;
         }
-        return result;
+        else break;
     }
+    while (ia < as) {
+        result[ir] = a[ia];
+        ia++;
+        ir++;
+    }
+    while (ib < bs)
+    {
+        result[ir] = b[ib];
+        ib++;
+        ir++;
+    }
+    return result;
+}
+bool VerifySort(int* arr, size_t N)
+{
+    if (N == 1 || N == 0) return 1;
+    if (arr[N-1] > arr[N - 2]) return 0;
 
-
-
+    return VerifySort(arr, N - 1);
+}
+typedef std::pair<int, int> p; //first is node connection second is weight
 
 int main()
+{
+    graph g;
+    g.addnode(1, p(1,2));
+    g.addnode(11, p(0, 2), p(2,2));
+    g.addnode(3, p(1, 1));
+
+    std::vector<node> ns = g.FindRoute(0, 2);
+    for (auto n : ns)
     {
+        std::cout << n.dist << std::endl;
 
-        int size = 16000;
-
+    }
+    return 0;
+    /*{
+        int size = 30000;
+        srand(time(NULL));
         int* array = new int[size];
         for (unsigned int i = 0; i < size; i++)
         {
             array[i] = rand();
         }
 
-
         auto t1 = std::chrono::high_resolution_clock::now();
-        bubblesort(array,size);
+
+        //insertsort(array,size);
         auto t2 = std::chrono::high_resolution_clock::now();
-
+        std::cout << "non parralel time: ";
         std::cout << (t2 - t1).count() << "\n";
-
-        t1 = std::chrono::high_resolution_clock::now();
-        insertsort(array, size);
-        t2 = std::chrono::high_resolution_clock::now();
-
-        std::cout << (t2 - t1).count() << "\n";
-
-
-        t1 = std::chrono::high_resolution_clock::now();
-        mergesort(array, size);
-        t2 = std::chrono::high_resolution_clock::now();
-        for (int i = 0; i < sizeof(array) / sizeof(int); i++)
+        std::cout << std::endl;
+        for (int i = 0; i < size; i++)
         {
             //std::cout << array[i] << " ";
         }
-        std::cout << (t2 - t1).count() << "\n";
-        
-        
-        //for (unsigned int i = 0; i < sizeof(a) / sizeof(a[0]) + sizeof(b) / sizeof(b[0]); i++) std::cout << c[i] << " ";
+        std::cout << std::endl;
 
-        
+
         t1 = std::chrono::high_resolution_clock::now();
-        std::promise<int*> d;
+        std::promise<  int*> d;
         std::future f_d = d.get_future();
         multimergesort(array, size, std::move(d));
         int* res = f_d.get();
+
         t2 = std::chrono::high_resolution_clock::now();
-        std::cout << (t2 - t1).count();
-        std::cout << "\n";
-        //for (unsigned int i = 0; i < size; i++)std::cout << res[i] << " ";
+        std::cout << std::endl;
+        std::cout << "parallel time: ";
+        std::cout << (t2 - t1).count() << std::endl;
+        std::cout << std::endl;
+        //  for (unsigned int i = 0; i < size; i++)std::cout << res[i] << " ";
         return 0;
     }
+    */
+}
